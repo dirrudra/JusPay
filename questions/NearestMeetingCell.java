@@ -1,3 +1,4 @@
+package questions;
 import java.util.Scanner;
 
 public class NearestMeetingCell {

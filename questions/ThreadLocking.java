@@ -1,7 +1,8 @@
+package questions;
 import java.util.*;
 import java.util.concurrent.locks.*;
 
-public class LockingSpaceThread {
+public class ThreadLocking {
     static class Node {
         String str;
         boolean isLocked;

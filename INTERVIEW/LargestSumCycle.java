@@ -1,3 +1,4 @@
+package INTERVIEW;
 import java.util.Scanner;
 
 public class LargestSumCycle {

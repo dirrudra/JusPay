@@ -1,3 +1,4 @@
+package questions;
 public class MazeNinja {
     public boolean pathExists(int[][] matrix, int sx, int sy, int dx, int dy) {
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0 ||

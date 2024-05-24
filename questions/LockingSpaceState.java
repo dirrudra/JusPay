@@ -1,11 +1,10 @@
+package questions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LockingStateGFG {
-    //Java code for the above approach
-	// Locking function
+class LockingSpaceState {
 	static String lock(String name,
 					Map<String, String> status)
 	{
@@ -19,7 +18,6 @@ public class LockingStateGFG {
 		}
 	}
 
-	// Unlocking function
 	static String unlock(String name,
 						Map<String, String> status)
 	{
@@ -32,14 +30,13 @@ public class LockingStateGFG {
 		}
 	}
 
-	// Upgrade function
 	static String upgrade(String name,
 						Map<String, String> status,
-						List<String> nodes,int m)
+						List<String> nodes)
 	{
 		int ind = nodes.indexOf(name) + 1;
-		int c1 = ind * m;
-		int c2 = ind * m + 1;
+		int c1 = ind * 2;
+		int c2 = ind * 2 + 1;
 		if (c1 < nodes.size() && c2 < nodes.size()) {
 			if ("lock".equals(status.get(nodes.get(c1 - 1)))
 				&& "lock".equals(
@@ -56,8 +53,8 @@ public class LockingStateGFG {
 		return "false";
 	}
 
-	// Precomputation
-	static Map<String, String> precompute(List<String> nodes, List<String> queries)
+	static Map<String, String>
+	precompute(List<String> nodes, List<String> queries)
 	{
 		List<String> d = new ArrayList<>();
 		for (String query : queries) {
@@ -72,10 +69,9 @@ public class LockingStateGFG {
 		return status;
 	}
 
-	// Function to perform operations
 	static String operation(String name, int code,
 							Map<String, String> status,
-							List<String> nodes,int m)
+							List<String> nodes)
 	{
 		String result = "false";
 		switch (code) {
@@ -86,7 +82,7 @@ public class LockingStateGFG {
 			result = unlock(name, status);
 			break;
 		case 3:
-			result = upgrade(name, status, nodes,m);
+			result = upgrade(name, status, nodes);
 			break;
 		}
 		return result;
@@ -94,10 +90,9 @@ public class LockingStateGFG {
 
 	public static void main(String[] args)
 	{
-		// Given Input
 		int n = 7;
 		int m = 2;
-		int apis = 5;
+		int qs = 5;
 
 		List<String> nodes = new ArrayList<>();
 		nodes.add("World");
@@ -130,11 +125,9 @@ public class LockingStateGFG {
 			System.out.print(
 				operation(d.get(j),
 						Integer.parseInt(d.get(j + 1)),
-						status, nodes,m)
+						status, nodes)
 				+ " ");
 		}
 	}
 }
-//This code is contributed by Potta Lokesh
-
 

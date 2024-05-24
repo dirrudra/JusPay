@@ -1,9 +1,11 @@
+package INTERVIEW;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
-
-public class ThreadLocking {
-    static class Node {
-        String str;
+public class ThreadLockingSrisun{
+    
+    static class Node{
+        String stringofstring="";
         boolean isLocked;
         int id;
         Node parent;
@@ -11,77 +13,35 @@ public class ThreadLocking {
         ArrayList<Node> child = new ArrayList<>();
         ReentrantLock lock = new ReentrantLock();
         ArrayList<Node> dsc_lockList = new ArrayList<>();
-
-        Node(String s) {
-            this.str = s;
+        Node(String s){
+            this.stringofstring = s;
         }
     }
-
-    static boolean getAllChilds(Node node, ArrayList<Node> a, int id) {
-
-        if (node == null) {
-            return true;
-        }
-
-        try {
-            if (!node.lock.tryLock(1, TimeUnit.SECONDS)) {
-                return false;
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return false;
-        }
-
-        try {
-            if (node.isLocked) {
-                if (id != node.id) {
-                    return false;
-                } else {
-                    a.add(node);
-                }
-            }
-
-            if (node.des_locked > 0) {
-                for (Node child : node.child) {
-                    boolean ans = getAllChilds(child, a, id);
-                    if (!ans) {
-                        return false;
-                    }
-                }
-            }
-        } finally {
-            node.lock.unlock();
-        }
-
-        return true;
-
-    }
-
+    
     static boolean lock(Node node, int id) {
         if (node.isLocked || node.des_locked > 0) {
             return false;
         }
-        Deque<Node> pathToRoot = new ArrayDeque<>();
+        Deque<Node> pathTotheultimateparent = new ArrayDeque<>();
         Node current = node;
         while (current != null) {
             if (!current.lock.tryLock()) {
-                while (!pathToRoot.isEmpty()) {
-                    Node cur = pathToRoot.removeLast();
+                while (!pathTotheultimateparent.isEmpty()) {
+                    Node cur = pathTotheultimateparent.removeLast();
                     cur.lock.unlock();
                 }
                 return false;
             }
-            pathToRoot.push(current);
+            pathTotheultimateparent.push(current);
             current = current.parent;
         }
-
+    
         try {
             node.isLocked = true;
             node.id = id;
-            pathToRoot.removeLast();
-
-            while (!pathToRoot.isEmpty()) {
-                Node cur = pathToRoot.pop();
+            pathTotheultimateparent.removeLast();
+            while (!pathTotheultimateparent.isEmpty()) {
+                Node cur = pathTotheultimateparent.pop();
                 cur.des_locked += 1;
                 cur.dsc_lockList.add(node);
                 cur.lock.unlock();
@@ -89,10 +49,9 @@ public class ThreadLocking {
         } finally {
             node.lock.unlock();
         }
-
+    
         return true;
     }
-
     static boolean unlock(Node node, int id) {
         if (!node.isLocked || node.id != id) {
             return false;
@@ -125,6 +84,7 @@ public class ThreadLocking {
             node.lock.unlock();
         }
 
+        
         return true;
     }
 
@@ -145,7 +105,7 @@ public class ThreadLocking {
             pathToRoot.push(current);
             current = current.parent;
         }
-
+        
         try {
             ArrayList<Node> a = node.dsc_lockList;
             if (a.size() == 0) {
@@ -168,7 +128,7 @@ public class ThreadLocking {
                 } finally {
                     child.lock.unlock();
                 }
-            }
+            }    
             node.des_locked = 0;
             for (Node child : a) {
                 child.lock.lock();
@@ -188,7 +148,7 @@ public class ThreadLocking {
 
             node.isLocked = true;
             node.id = id;
-            pathToRoot.removeLast();
+            pathToRoot.removeLast(); 
             while (!pathToRoot.isEmpty()) {
                 Node cur = pathToRoot.pop();
                 cur.des_locked -= a.size() - 1;
@@ -236,7 +196,6 @@ public class ThreadLocking {
                 }
             }
         }
-
         class QueryTask implements Runnable {
             private int val;
             private String str;
@@ -268,8 +227,9 @@ public class ThreadLocking {
             int id = scn.nextInt();
 
             QueryTask task = new QueryTask(val, str, id);
-            Thread thread = new Thread(task, "Query: " + val + " " + str + " " + id);
+            Thread thread = new Thread(task, "Query: "+val+" "+str+" "+id);
             threads.add(thread);
+            
         }
 
         for (Thread thread : threads) {
@@ -283,13 +243,6 @@ public class ThreadLocking {
 
         scn.close();
     }
-
-    public static void displayStat(HashMap<String, Node> hash) {
-        System.out.println("==============");
-        for (String key : hash.keySet()) {
-            System.out.println(key + " " + hash.get(key).isLocked + " " + hash.get(key).id + " "
-                    + hash.get(key).des_locked);
-        }
-        System.out.println("==============");
-    }
+    
+  
 }
